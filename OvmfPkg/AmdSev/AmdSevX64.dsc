@@ -33,6 +33,7 @@
   #
   DEFINE SOURCE_DEBUG_ENABLE     = FALSE
   DEFINE DEBUG_TO_MEM            = FALSE
+  DEFINE NON_CC_BUILD            = FALSE
 
 !include OvmfPkg/Include/Dsc/OvmfTpmDefines.dsc.inc
 
@@ -168,7 +169,11 @@
   LockBoxLib|OvmfPkg/Library/LockBoxLib/LockBoxBaseLib.inf
   CustomizedDisplayLib|MdeModulePkg/Library/CustomizedDisplayLib/CustomizedDisplayLib.inf
   FrameBufferBltLib|MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.inf
+!if $(NON_CC_BUILD) == TRUE
+  BlobVerifierLib|OvmfPkg/Library/BlobVerifierLibNull/BlobVerifierLibNull.inf
+!else
   BlobVerifierLib|OvmfPkg/AmdSev/BlobVerifierLibSevHashes/BlobVerifierLibSevHashes.inf
+!endif
   MemEncryptTdxLib|OvmfPkg/Library/BaseMemEncryptTdxLib/BaseMemEncryptTdxLib.inf
   PeiHardwareInfoLib|OvmfPkg/Library/HardwareInfoLib/PeiHardwareInfoLib.inf
   DxeHardwareInfoLib|OvmfPkg/Library/HardwareInfoLib/DxeHardwareInfoLib.inf
@@ -676,6 +681,9 @@
   MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
   OvmfPkg/QemuKernelLoaderFsDxe/QemuKernelLoaderFsDxe.inf {
     <LibraryClasses>
+!if $(NON_CC_BUILD) == TRUE
+      NULL|OvmfPkg/Library/BlobVerifierLibNull/BlobVerifierLibNull.inf
+!else
       NULL|OvmfPkg/AmdSev/BlobVerifierLibSevHashes/BlobVerifierLibSevHashes.inf
   }
   OvmfPkg/VirtioPciDeviceDxe/VirtioPciDeviceDxe.inf
